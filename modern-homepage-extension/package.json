@@ -1,0 +1,31 @@
+{
+  "name": "modern-homepage-extension",
+  "version": "1.0.0",
+  "description": "A customizable, fast, and modern homepage extension with tabbed interface",
+  "main": "index.html",
+  "scripts": {
+    "serve": "python -m http.server 8000",
+    "build": "echo 'No build process required - ready for production'",
+    "zip": "zip -r modern-homepage-extension.zip . -x '*.git*' 'node_modules/*' '*.DS_Store'"
+  },
+  "keywords": [
+    "homepage",
+    "browser-extension",
+    "tabs",
+    "bookmarks",
+    "productivity",
+    "customizable"
+  ],
+  "author": "Modern Homepage Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/username/modern-homepage-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/username/modern-homepage-extension/issues"
+  },
+  "homepage": "https://github.com/username/modern-homepage-extension#readme",
+  "devDependencies": {},
+  "dependencies": {}
+}
