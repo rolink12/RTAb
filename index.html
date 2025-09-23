@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'var(--primary-color)',
+                        'primary-dark': 'var(--primary-dark-color)',
+                        'primary-light': 'var(--primary-light-color)',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 h-screen flex flex-col transition-colors duration-300">
+    <!-- Header -->
+    <header class="flex-shrink-0 sticky top-0 z-40 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <!-- Logo and Title -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">MH</span>
+                    </div>
+                    <h1 class="text-xl font-semibold text-gray-900 dark:text-white">RTab</h1>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            id="searchInput"
+                            placeholder="Search the web..."
+                            class="w-full px-4 py-2 pl-10 pr-12 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                        >
+                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <button id="searchBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1.5 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Settings Button -->
+                <button id="settingsBtn" class="p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto flex-1 w-full flex min-h-0">
+        <div class="lg:flex flex-1">
+            <!-- Vertical Tab Bar (Sidebar) -->
+            <aside class="lg:w-64 lg:flex-shrink-0 lg:border-r lg:border-gray-200 lg:dark:border-gray-700 lg:overflow-y-auto">
+                <div class="h-full">
+                    <!-- Tab Navigation -->
+                    <div class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 lg:border-b-0 lg:bg-transparent lg:dark:bg-transparent lg:p-4">
+                        <div class="max-w-7xl mx-auto px-4 lg:px-0">
+                            <div class="flex items-center justify-between lg:flex-col lg:items-stretch">
+                                <button id="addTabBtn" class="flex-shrink-0 p-2 text-gray-600 dark:text-gray-400 rounded-lg transition-colors lg:w-full lg:flex lg:items-center lg:justify-center lg:space-x-2 lg:py-3 lg:bg-gray-100 lg:dark:bg-gray-700 lg:hover:bg-gray-200 lg:dark:hover:bg-gray-600">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                    <span class="hidden lg:inline">New Tab</span>
+                                </button>
+                                <div class="flex items-center space-x-1 overflow-x-auto lg:flex-col lg:space-x-0 lg:space-y-1 lg:overflow-y-auto" id="tabContainer">
+                                    <!-- Tabs will be dynamically generated -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-6 overflow-y-auto">
+                <div id="tabContent">
+                    <!-- Tab content will be dynamically generated -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold">Settings</h2>
+                    <button id="closeSettingsBtn" class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Theme Settings -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Theme</label>
+                        <div class="flex space-x-2">
+                            <button id="lightThemeBtn" class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Light</button>
+                            <button id="darkThemeBtn" class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Dark</button>
+                            <button id="autoThemeBtn" class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Auto</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Accent Color</label>
+                        <div class="grid grid-cols-6 gap-2">
+                            <button class="accent-color w-8 h-8 rounded-full border-2 border-gray-300" data-color="59, 130, 246" style="background-color: rgb(59, 130, 246);"></button>
+                            <button class="accent-color w-8 h-8 rounded-full border-2 border-gray-300" data-color="147, 51, 234" style="background-color: rgb(147, 51, 234);"></button>
+                            <button class="accent-color w-8 h-8 rounded-full border-2 border-gray-300" data-color="239, 68, 68" style="background-color: rgb(239, 68, 68);"></button>
+                            <button class="accent-color w-8 h-8 rounded-full border-2 border-gray-300" data-color="34, 197, 94" style="background-color: rgb(34, 197, 94);"></button>
+                            <button class="accent-color w-8 h-8 rounded-full border-2 border-gray-300" data-color="251, 146, 60" style="background-color: rgb(251, 146, 60);"></button>
+                            <button class="accent-color w-8 h-8 rounded-full border-2 border-gray-300" data-color="236, 72, 153" style="background-color: rgb(236, 72, 153);"></button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Search Engine</label>
+                        <select id="searchEngineSelect" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700">
+                            <option value="google">Google</option>
+                            <option value="bing">Bing</option>
+                            <option value="duckduckgo">DuckDuckGo</option>
+                            <option value="yahoo">Yahoo</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <button id="exportDataBtn" class="w-full p-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors mb-2">Export Data</button>
+                        <button id="importDataBtn" class="w-full p-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors mb-2">Import Data</button>
+                        <button id="resetDataBtn" class="w-full p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Reset All Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Link Modal -->
+    <div id="addLinkModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold">Add Quick Link</h2>
+                    <button id="closeLinkModalBtn" class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="addLinkForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Title</label>
+                        <input type="text" id="linkTitle" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" placeholder="Enter link title" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">URL</label>
+                        <input type="url" id="linkUrl" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" placeholder="https://example.com" required>
+                    </div>
+                    <div class="flex space-x-2 pt-4">
+                        <button type="button" id="cancelLinkBtn" class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Cancel</button>
+                        <button type="submit" class="flex-1 p-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">Add Link</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Link Modal -->
+    <div id="editLinkModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold">Edit Quick Link</h2>
+                    <button id="closeEditLinkModalBtn" class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="editLinkForm" class="space-y-4">
+                    <input type="hidden" id="editLinkId">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Title</label>
+                        <input type="text" id="editLinkTitle" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" placeholder="Enter link title" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">URL</label>
+                        <input type="url" id="editLinkUrl" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" placeholder="https://example.com" required>
+                    </div>
+                    <div class="flex space-x-2 pt-4">
+                        <button type="button" id="cancelEditLinkBtn" class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">Cancel</button>
+                        <button type="submit" class="flex-1 p-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteTabModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Delete Tab</h2>
+                    <button id="closeDeleteTabModalBtn" class="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-gray-700 dark:text-gray-300 mb-6">This tab contains links. Are you sure you want to delete it?</p>
+                <div class="flex justify-end space-x-3">
+                    <button id="cancelDeleteTabBtn" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        Cancel
+                    </button>
+                    <button id="confirmDeleteTabBtn" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                        Delete
+                    </button>
+                </div>
+                <input type="hidden" id="tabToDeleteId">
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Tab Modal -->
+    <div id="renameTabModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-semibold">Rename Tab</h2>
+                    <button id="closeRenameTabModalBtn" class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <form id="renameTabForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Tab Name</label>
+                        <input type="text" id="tabNameInput" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700" placeholder="Enter tab name" required>
+                        <input type="hidden" id="currentTabId">
+                    </div>
+                    <div class="flex space-x-2 pt-4">
+                        <button type="button" id="cancelRenameTabBtn" class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            Cancel
+                        </button>
+                        <button type="submit" class="flex-1 p-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden file input for import -->
+    <input type="file" id="importFileInput" accept=".json" style="display: none;">
+
+    <script src="js/app.js"></script>
+</body>
+</html>
