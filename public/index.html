@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RTab - Modern Homepage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 h-full flex flex-col transition-colors duration-300">
+    <div id="app" class="flex flex-col h-full">
+        <!-- App content will be injected here -->
+        <div class="flex-1 overflow-hidden">
+            <div class="h-full flex">
+                <!-- Sidebar -->
+                <aside class="w-16 md:w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-shrink-0 transition-all duration-300">
+                    <div class="p-4">
+                        <div class="flex items-center space-x-3 mb-8">
+                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                <span class="text-white font-bold">RT</span>
+                            </div>
+                            <h1 class="text-xl font-semibold hidden md:block">RTab</h1>
+                        </div>
+                        
+                        <div id="tabContainer" class="space-y-1">
+                            <!-- Tabs will be rendered here -->
+                        </div>
+                        
+                        <button id="addTabBtn" class="mt-4 w-full flex items-center justify-center p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            <span class="ml-2 hidden md:inline">New Tab</span>
+                        </button>
+                    </div>
+                    
+                    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
+                        <button id="settingsBtn" class="w-full flex items-center p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                            <span class="ml-2 hidden md:inline">Settings</span>
+                        </button>
+                    </div>
+                </aside>
+                
+                <!-- Main Content -->
+                <main class="flex-1 flex flex-col overflow-hidden">
+                    <!-- Header -->
+                    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4">
+                        <div class="max-w-4xl mx-auto">
+                            <div class="relative">
+                                <input 
+                                    type="text" 
+                                    id="searchInput"
+                                    placeholder="Search the web or type a URL..."
+                                    class="w-full px-4 py-3 pl-12 pr-14 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200"
+                                >
+                                <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                                <button id="searchBtn" class="absolute right-2 top-1/2 transform -translate-y-1/2 p-1.5 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+                    
+                    <!-- Tab Content -->
+                    <div id="tabContent" class="flex-1 overflow-y-auto p-6">
+                        <!-- Tab content will be rendered here -->
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modals will be mounted here -->
+    <div id="modals"></div>
+    
+    <!-- Scripts -->
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
