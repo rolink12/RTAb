@@ -211,7 +211,7 @@ class ModernHomepage {
 
         // Add tab button
         document.getElementById('addTabBtn').addEventListener('click', () => {
-            this.createTab();
+            this.showNewTabModal();
         });
         
         // Setup drag and drop for tabs
@@ -274,8 +274,38 @@ class ModernHomepage {
             }
         });
 
+        // New Tab Modal
+        const newTabModal = document.getElementById('newTabModal');
+        const closeNewTabModalBtn = document.getElementById('closeNewTabModalBtn');
+        const cancelNewTabBtn = document.getElementById('cancelNewTabBtn');
+        const newTabForm = document.getElementById('newTabForm');
+        const newTabNameInput = document.getElementById('newTabNameInput');
+
+        const closeNewTabModal = () => {
+            newTabModal.classList.add('hidden');
+            newTabNameInput.value = '';
+        };
+
+        closeNewTabModalBtn.addEventListener('click', closeNewTabModal);
+        cancelNewTabBtn.addEventListener('click', closeNewTabModal);
+
+        newTabForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const tabName = newTabNameInput.value.trim();
+            if (tabName) {
+                this.createTab(tabName);
+                closeNewTabModal();
+            }
+        });
+
+        newTabModal.addEventListener('click', (e) => {
+            if (e.target === newTabModal) {
+                closeNewTabModal();
+            }
+        });
+
         // Close modals on outside click
-        [settingsModal, addLinkModal, editLinkModal].forEach(modal => {
+        [settingsModal, addLinkModal, editLinkModal, newTabModal].forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.classList.add('hidden');
@@ -289,7 +319,7 @@ class ModernHomepage {
                 switch (e.key) {
                     case 't':
                         e.preventDefault();
-                        this.createTab();
+                        this.showNewTabModal();
                         break;
                     case 'w':
                         e.preventDefault();
@@ -370,11 +400,10 @@ class ModernHomepage {
         return Date.now().toString(36) + Math.random().toString(36).substr(2);
     }
 
-    createTab(name = null, setActive = true, isDefault = false) {
-        const tabName = name || 'New Tab';
+    createTab(name = 'New Tab', setActive = true, isDefault = false) {
         const tab = {
             id: this.generateId(),
-            name: tabName,
+            name: name,
             pinned: false,
             isDefault: isDefault,
             quickLinks: [],
@@ -411,6 +440,21 @@ class ModernHomepage {
             // If no links, delete directly
             this.confirmDeleteTab(tabId);
         }
+    }
+
+    showNewTabModal() {
+        const modal = document.getElementById('newTabModal');
+        modal.classList.remove('hidden');
+
+        // Clear form and set default value
+        const newTabNameInput = document.getElementById('newTabNameInput');
+        newTabNameInput.value = 'New Tab';
+
+        // Focus on input
+        setTimeout(() => {
+            newTabNameInput.focus();
+            newTabNameInput.select();
+        }, 100);
     }
 
     confirmDeleteTab(tabId) {
@@ -632,24 +676,27 @@ class ModernHomepage {
 
             // Determine which icon to show based on tab name for default tabs
             let tabIcon = '';
+            const genericIcon = '<svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>'; // Generic document icon
+
             if (tab.isDefault) {
                 if (tab.name === 'Home') {
-                    tabIcon = '<svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>';
+                    tabIcon = '<svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>';
                 } else if (tab.name === 'Tools') {
-                    tabIcon = '<svg class="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 6h6.75M21 12c0 1.1-.9 2-2 2h-1.5M3 12c0-1.1.9-2 2-2h1.5m13.5 0h-15c-.83 0-1.5.67-1.5 1.5v6c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-6c0-.83-.67-1.5-1.5-1.5z"></path></svg>';
+                    tabIcon = '<svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 6h6.75M21 12c0 1.1-.9 2-2 2h-1.5M3 12c0-1.1.9-2 2-2h1.5m13.5 0h-15c-.83 0-1.5.67-1.5 1.5v6c0 .83.67 1.5 1.5 1.5h15c.83 0 1.5-.67 1.5-1.5v-6c0-.83-.67-1.5-1.5-1.5z"></path></svg>';
                 }
+            } else {
+                tabIcon = genericIcon; // Assign generic icon for non-default tabs
             }
 
             // Build the tab content
             // Add pin icon if tab is pinned
             const pinIcon = tab.pinned ? 
-                '<svg class="w-3 h-3 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>' : 
+                '<svg class="w-4 h-4 text-gray-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path></svg>' : 
                 '';
                 
             let tabContent = `
                 <span class="tab-name flex items-center flex-1 text-left justify-start" title="${tab.name}">
-                    ${tab.pinned ? pinIcon : ''}
-                    ${tab.isDefault ? tabIcon : ''}
+                    ${tab.pinned ? pinIcon : tabIcon} <!-- Show pinIcon if pinned, otherwise show tabIcon -->
                     <span class="text-left">${tab.name}</span>
                 </span>`;
             
