@@ -254,4 +254,65 @@ export function setupEventListeners(app) {
             }
         }
     });
+
+    const tabContainer = document.getElementById('tabContainer');
+    tabContainer.addEventListener('keydown', (e) => {
+        const tabs = Array.from(tabContainer.querySelectorAll('[role="tab"]'));
+        const focusedTabIndex = tabs.findIndex(tab => tab === document.activeElement);
+
+        if (focusedTabIndex === -1) return;
+
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+            e.preventDefault();
+
+            const fromTabId = tabs[focusedTabIndex].getAttribute('data-tab-id');
+            const fromIndex = app.tabs.findIndex(t => t.id === fromTabId);
+
+            if (fromIndex === -1 || app.tabs[fromIndex].isDefault) {
+                return; // Cannot move default tabs
+            }
+
+            let toIndex;
+            if (e.key === 'ArrowLeft') {
+                const targetDomIndex = focusedTabIndex > 0 ? focusedTabIndex - 1 : tabs.length - 1;
+                const targetTabId = tabs[targetDomIndex].getAttribute('data-tab-id');
+                toIndex = app.tabs.findIndex(t => t.id === targetTabId);
+            } else {
+                const targetDomIndex = focusedTabIndex < tabs.length - 1 ? focusedTabIndex + 1 : 0;
+                const targetTabId = tabs[targetDomIndex].getAttribute('data-tab-id');
+                toIndex = app.tabs.findIndex(t => t.id === targetTabId);
+            }
+
+            if (toIndex !== -1 && !app.tabs[toIndex].isDefault) {
+                app.moveTab(fromIndex, toIndex);
+                setTimeout(() => {
+                    const newTabEl = tabContainer.querySelector(`[data-tab-id="${fromTabId}"]`);
+                    newTabEl?.focus();
+                }, 0);
+            }
+        } else if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+            e.preventDefault();
+            let nextTabIndex;
+            switch (e.key) {
+                case 'ArrowLeft':
+                    nextTabIndex = focusedTabIndex > 0 ? focusedTabIndex - 1 : tabs.length - 1;
+                    break;
+                case 'ArrowRight':
+                    nextTabIndex = focusedTabIndex < tabs.length - 1 ? focusedTabIndex + 1 : 0;
+                    break;
+                case 'Home':
+                    nextTabIndex = 0;
+                    break;
+                case 'End':
+                    nextTabIndex = tabs.length - 1;
+                    break;
+            }
+            tabs[nextTabIndex]?.focus();
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            if (document.activeElement.classList.contains('tab')) {
+                e.preventDefault();
+                document.activeElement.click();
+            }
+        }
+    });
 }

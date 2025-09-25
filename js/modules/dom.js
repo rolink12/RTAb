@@ -27,6 +27,9 @@ export function renderTabs(app) {
         // Add drag and drop attributes
         tabElement.setAttribute('draggable', 'true');
         tabElement.setAttribute('data-tab-id', tab.id);
+        tabElement.setAttribute('role', 'tab');
+        tabElement.setAttribute('aria-selected', tab.id === app.activeTabId);
+        tabElement.setAttribute('tabindex', tab.id === app.activeTabId ? '0' : '-1');
 
         // Determine which icon to show based on tab name for default tabs
         let tabIcon = '';

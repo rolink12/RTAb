@@ -215,70 +215,68 @@ export class ModernHomepage {
         let draggedTab = null;
 
         container.addEventListener('dragstart', (e) => {
-            if (e.target.classList.contains('tab')) {
-                draggedTab = e.target;
-                e.target.classList.add('opacity-50');
+            const target = e.target.closest('.tab');
+            if (target) {
+                draggedTab = target;
+                // Defer class modifications to avoid interfering with drag image
+                setTimeout(() => {
+                    target.classList.add('opacity-50');
+                }, 0);
                 e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/html', e.target.innerHTML);
+                e.dataTransfer.setData('text/plain', target.getAttribute('data-tab-id'));
             }
         });
 
         container.addEventListener('dragend', (e) => {
-            if (e.target.classList.contains('tab')) {
-                e.target.classList.remove('opacity-50');
-                document.querySelectorAll('.drag-indicator').forEach(el => el.remove());
+            const target = e.target.closest('.tab');
+            if (target) {
+                target.classList.remove('opacity-50');
             }
+            document.querySelectorAll('.drag-indicator').forEach(el => el.remove());
+            draggedTab = null;
         });
 
         container.addEventListener('dragover', (e) => {
             e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-
+            const afterElement = this.getDragAfterElement(container, e.clientX, e.clientY);
             document.querySelectorAll('.drag-indicator').forEach(el => el.remove());
 
-            const afterElement = this.getDragAfterElement(container, e.clientX, e.clientY);
+            const indicator = document.createElement('div');
+            indicator.className = 'drag-indicator'; // Style in CSS
 
             if (afterElement) {
-                const indicator = document.createElement('div');
-                indicator.className = 'drag-indicator h-8 w-1 bg-blue-500 mx-0.5';
                 container.insertBefore(indicator, afterElement);
             } else {
-                const indicator = document.createElement('div');
-                indicator.className = 'drag-indicator h-8 w-1 bg-blue-500 mx-0.5';
                 container.appendChild(indicator);
             }
         });
 
         container.addEventListener('drop', (e) => {
             e.preventDefault();
+            document.querySelectorAll('.drag-indicator').forEach(el => el.remove());
 
             if (!draggedTab) return;
 
-            const tabId = draggedTab.getAttribute('data-tab-id');
-            if (!tabId) return;
+            const fromTabId = e.dataTransfer.getData('text/plain');
+            const fromIndex = this.tabs.findIndex(tab => tab.id === fromTabId);
 
-            const tabIndex = this.tabs.findIndex(tab => tab.id === tabId);
-            if (tabIndex === -1) return;
+            if (fromIndex === -1) return;
 
             const afterElement = this.getDragAfterElement(container, e.clientX, e.clientY);
-            let newIndex = -1;
+            let toIndex;
 
             if (afterElement) {
-                const nextTabId = afterElement.getAttribute('data-tab-id');
-                newIndex = this.tabs.findIndex(tab => tab.id === nextTabId);
+                const toTabId = afterElement.getAttribute('data-tab-id');
+                toIndex = this.tabs.findIndex(tab => tab.id === toTabId);
             } else {
-                newIndex = this.tabs.length - 1;
+                toIndex = this.tabs.length;
             }
 
-            if (newIndex !== -1 && newIndex !== tabIndex) {
-                const [movedTab] = this.tabs.splice(tabIndex, 1);
-                this.tabs.splice(newIndex, 0, movedTab);
-
-                this.saveData();
-                this.renderTabs();
+            if (fromIndex < toIndex) {
+                toIndex--;
             }
 
-            draggedTab = null;
+            this.moveTab(fromIndex, toIndex);
         });
     }
 
