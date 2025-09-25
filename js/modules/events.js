@@ -260,19 +260,22 @@ export function setupEventListeners(app) {
         if (e.target.closest('[role="tab"]')) {
             const tabs = Array.from(tabContainer.querySelectorAll('[role="tab"]'));
             const focusedTabIndex = tabs.findIndex(tab => tab === document.activeElement);
-
             if (focusedTabIndex === -1) return;
 
-            if ((e.ctrlKey || e.metaKey) && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
+            const isVerticalLayout = window.innerWidth >= 1024;
+            const primaryNavKey = isVerticalLayout ? 'ArrowDown' : 'ArrowRight';
+            const secondaryNavKey = isVerticalLayout ? 'ArrowUp' : 'ArrowLeft';
+            const primaryMoveKey = isVerticalLayout ? 'ArrowDown' : 'ArrowRight';
+            const secondaryMoveKey = isVerticalLayout ? 'ArrowUp' : 'ArrowLeft';
+
+            if ((e.ctrlKey || e.metaKey) && (e.key === primaryMoveKey || e.key === secondaryMoveKey)) {
                 e.preventDefault();
                 const fromTabId = tabs[focusedTabIndex].getAttribute('data-tab-id');
                 const fromIndex = app.tabs.findIndex(t => t.id === fromTabId);
 
-                if (fromIndex === -1 || app.tabs[fromIndex].isDefault) {
-                    return; // Cannot move default tabs
-                }
+                if (fromIndex === -1 || app.tabs[fromIndex].isDefault) return;
 
-                let toIndex = e.key === 'ArrowLeft' ? fromIndex - 1 : fromIndex + 1;
+                let toIndex = e.key === secondaryMoveKey ? fromIndex - 1 : fromIndex + 1;
 
                 const defaultTabsCount = app.tabs.filter(t => t.isDefault).length;
                 if (toIndex < defaultTabsCount) {
@@ -281,22 +284,20 @@ export function setupEventListeners(app) {
 
                 if (toIndex >= 0 && toIndex < app.tabs.length) {
                     app.moveTab(fromIndex, toIndex);
-
-                    // Keep focus on the moved tab
                     setTimeout(() => {
                         const newTabEl = tabContainer.querySelector(`[data-tab-id="${fromTabId}"]`);
                         newTabEl?.focus();
                     }, 0);
                 }
-            } else if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
+            } else if ([primaryNavKey, secondaryNavKey, 'Home', 'End'].includes(e.key)) {
                 e.preventDefault();
                 let nextTabIndex;
                 switch (e.key) {
-                    case 'ArrowLeft':
-                        nextTabIndex = focusedTabIndex > 0 ? focusedTabIndex - 1 : tabs.length - 1;
-                        break;
-                    case 'ArrowRight':
+                    case primaryNavKey:
                         nextTabIndex = focusedTabIndex < tabs.length - 1 ? focusedTabIndex + 1 : 0;
+                        break;
+                    case secondaryNavKey:
+                        nextTabIndex = focusedTabIndex > 0 ? focusedTabIndex - 1 : tabs.length - 1;
                         break;
                     case 'Home':
                         nextTabIndex = 0;
