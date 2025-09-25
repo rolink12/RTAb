@@ -218,19 +218,15 @@ export class ModernHomepage {
             const target = e.target.closest('.tab');
             if (target) {
                 draggedTab = target;
-                // Defer class modifications to avoid interfering with drag image
-                setTimeout(() => {
-                    target.classList.add('opacity-50');
-                }, 0);
+                setTimeout(() => target.classList.add('opacity-50'), 0);
                 e.dataTransfer.effectAllowed = 'move';
                 e.dataTransfer.setData('text/plain', target.getAttribute('data-tab-id'));
             }
         });
 
         container.addEventListener('dragend', (e) => {
-            const target = e.target.closest('.tab');
-            if (target) {
-                target.classList.remove('opacity-50');
+            if (draggedTab) {
+                draggedTab.classList.remove('opacity-50');
             }
             document.querySelectorAll('.drag-indicator').forEach(el => el.remove());
             draggedTab = null;
@@ -238,11 +234,13 @@ export class ModernHomepage {
 
         container.addEventListener('dragover', (e) => {
             e.preventDefault();
+            if (!draggedTab) return;
+
             const afterElement = this.getDragAfterElement(container, e.clientX, e.clientY);
             document.querySelectorAll('.drag-indicator').forEach(el => el.remove());
 
             const indicator = document.createElement('div');
-            indicator.className = 'drag-indicator'; // Style in CSS
+            indicator.className = 'drag-indicator';
 
             if (afterElement) {
                 container.insertBefore(indicator, afterElement);
@@ -277,6 +275,7 @@ export class ModernHomepage {
             }
 
             this.moveTab(fromIndex, toIndex);
+            draggedTab = null;
         });
     }
 
