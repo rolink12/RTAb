@@ -216,15 +216,17 @@ export class ModernHomepage {
 
         container.addEventListener('dragstart', (e) => {
             const target = e.target.closest('.tab');
-            if (target) {
+            if (target && !target.hasAttribute('data-is-default')) {
                 draggedTab = target;
                 setTimeout(() => target.classList.add('opacity-50'), 0);
                 e.dataTransfer.effectAllowed = 'move';
                 e.dataTransfer.setData('text/plain', target.getAttribute('data-tab-id'));
+            } else {
+                e.preventDefault();
             }
         });
 
-        container.addEventListener('dragend', (e) => {
+        container.addEventListener('dragend', () => {
             if (draggedTab) {
                 draggedTab.classList.remove('opacity-50');
             }
@@ -238,10 +240,8 @@ export class ModernHomepage {
 
             const afterElement = this.getDragAfterElement(container, e.clientX, e.clientY);
             document.querySelectorAll('.drag-indicator').forEach(el => el.remove());
-
             const indicator = document.createElement('div');
             indicator.className = 'drag-indicator';
-
             if (afterElement) {
                 container.insertBefore(indicator, afterElement);
             } else {
@@ -252,12 +252,10 @@ export class ModernHomepage {
         container.addEventListener('drop', (e) => {
             e.preventDefault();
             document.querySelectorAll('.drag-indicator').forEach(el => el.remove());
-
             if (!draggedTab) return;
 
             const fromTabId = e.dataTransfer.getData('text/plain');
             const fromIndex = this.tabs.findIndex(tab => tab.id === fromTabId);
-
             if (fromIndex === -1) return;
 
             const afterElement = this.getDragAfterElement(container, e.clientX, e.clientY);
