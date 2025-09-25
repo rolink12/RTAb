@@ -5,13 +5,7 @@
   "type": "module",
   "main": "index.html",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "build:extension": "npm run build && node scripts/build-extension.js",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "lint": "eslint src --ext .js"
+    "build:extension": "node scripts/build-extension.js"
   },
   "keywords": [
     "homepage",
@@ -30,26 +24,5 @@
   "bugs": {
     "url": "https://github.com/rolink12/RTAb/issues"
   },
-  "homepage": "https://github.com/rolink12/RTAb#readme",
-  "devDependencies": {
-    "@types/jest": "^29.5.0",
-    "@types/node": "^20.0.0",
-    "autoprefixer": "^10.4.14",
-    "eslint": "^8.41.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jest": "^27.2.2",
-    "eslint-plugin-prettier": "^4.2.1",
-    "jest": "^29.5.0",
-    "jest-environment-jsdom": "^29.5.0",
-    "postcss": "^8.4.23",
-    "prettier": "^2.8.8",
-    "tailwindcss": "^3.3.2",
-    "vite": "^4.3.9",
-    "vite-plugin-html": "^3.2.0"
-  },
-  "dependencies": {
-    "@tailwindcss/forms": "^0.5.3",
-    "@tailwindcss/typography": "^0.5.9"
-  }
+  "homepage": "https://github.com/rolink12/RTAb#readme"
 }
